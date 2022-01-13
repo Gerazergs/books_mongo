@@ -1,0 +1,51 @@
+
+
+
+
+
+#MONGO DATABASE APARTADO 6
+
+mongoimport --host localhost:27017 --db LocalesMadrid --collection Locales --file csvjson.json --jsonArray
+
+var schematodo = db.Locales.findOne({})
+for (var key in schematodo){print(key,typeof key);}
+
+db.Locales.distinct('desc_situacion_local')
+
+db.getCollection('Locales').updateMany({'desc_distrito_local':'SALAMANCA','desc_barrio_local':'GUINDALERA'},{$set: {desc_situacion_local: "Cerrado"}})
+
+db.Locales.distinct('desc_situacion_terraza')
+
+db.getCollection('Locales').updateMany({'desc_distrito_local':'SALAMANCA','desc_barrio_local':'GUINDALERA'},{$set: {desc_situacion_terraza: "Suspension temporal"}})
+
+db.Locales.distinct('desc_ubicacion_terraza')
+
+db.getCollection('Locales').updateMany({'desc_ubicacion_terraza':'Acera', "$expr" : {"$gt" : [{"$toInt" :"$mesas_es"} , 10]}},{$set:{'inspeccionar':true}})
+
+db.getCollection('Locales').updateMany({'desc_ubicacion_terraza':'Acera', "$expr" : {"$lte" : [{"$toInt" :"$mesas_es"} , 10]}},{$set:{'inspeccionar':false}})
+
+db.getCollection('Locales').updateMany({'desc_ubicacion_terraza':'Acera', 'inspeccionar':true},{$set:{'mesas_aux_es':'2','sillas_es':'8'}})  
+
+db.getCollection('Locales').updateMany({'desc_ubicacion_terraza':'Acera', 'inspeccionar':false,"$expr" : {"$lt" : [{"$toInt" :"$sillas_es"} , 10]}},{$set:{'estado':1}})
+
+db.getCollection('Locales').updateMany({'desc_ubicacion_terraza':'Acera', 'inspeccionar':false,"$expr" : {"$and": [ {"$gte" : [{"$toInt" :"$sillas_es"} , 10]},{"$lte" : [{"$toInt" :"$sillas_es"} , 20]}] }},{$set:{'estado':2}})
+   
+db.getCollection('Locales').updateMany({'desc_ubicacion_terraza':'Acera', 'inspeccionar':false,"$expr" : {"$gte" : [{"$toInt" :"$sillas_es"} , 20]}},{$set:{'estado':3}})
+
+db.getCollection('Locales').updateMany({'hora_fin_LJ_es':{$gte: '00:00:00'}},{$set:{'hora_fin_LJ_es':'00:00:00'}})
+
+db.getCollection('Locales').updateMany({'hora_fin_VS_es': '2:30:00'},{$set:{'hora_fin_VS_es':'2:00:00'}})
+
+db.Locales.distinct('DESC_CLASE')
+
+db.Locales.updateMany({'DESC_CLASE':'CALLE','DESC_NOMBRE':'ALCALA'}, {$set:{'inspeccionar':true}})
+
+db.Locales.updateMany({'desc_situacion_terraza': "Abierta"},{$set:{'revision':{'prox_inspeccion': 10, 'puntuacion': 80, 'comentario': 'separar las mesas'}}})
+
+db.Locales.distinct('desc_distrito_local')
+
+db.Locales.aggregate([{$match: {'desc_distrito_local': "VILLAVERDE"}},{$out: 'zona1'}])
+
+db.Locales.distinct('desc_barrio_local')
+
+db.Locales.aggregate([{$match:{ $and: [ {'desc_distrito_local': "SALAMANCA"} , {'desc_barrio_local': "CASTELLANA" } ] } },{$out: 'zona2'}])

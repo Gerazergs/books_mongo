@@ -1,0 +1,210 @@
+var schematodo = db.books.findOne({})
+for (var key in schematodo){print(key,typeof key);}
+
+
+db.getCollection('books').find({publishedDate: {$exists: true}, authors: {$size: 2}} , {title:1,longDescription:1,status:1,authors:1})
+
+db.getCollection('books').find({publishedDate: {$exists: true}, authors: {$size: 2}} , {title:1,longDescription:1,status:1,authors:1}).toArray()
+
+
+db.getCollection('books').find({publishedDate: {$exists: true}, authors: {$size: 2}} , {title:1,longDescription:1,status:1,authors:1}).toArray().forEach(function(valor, indice, array){print("Titulo: " + valor.title + "Autho 1: " + valor.authors[0] + " Author 2: " + valor.authors[1] + " Registro No. " + indice);})
+
+
+db.getCollection('books').dataSize()
+
+
+db.getCollection('books').count()
+
+
+db.getCollection('books').aggregate(
+  [
+    {
+      $match: {
+        pageCount: {
+          $gt: 200
+        }
+      }
+    },
+    {
+      $count: "Cantidad_libros"
+    }
+  ]
+)
+
+db.getCollection('books').aggregate(
+  [
+    {
+      $match: {
+        pageCount: {
+          $gte: 300, $lte: 600
+        }
+      }
+    },
+    {
+      $count: "Cantidad_libros"
+    }
+  ]
+)
+
+db.getCollection('books').aggregate(
+  [
+    {
+      $match: {
+        pageCount: 0
+      }
+    },
+    {
+      $count: "Cantidad_libros"
+    }
+  ]
+)
+
+
+db.getCollection('books').aggregate(
+  [
+    {
+      $match: {
+        pageCount: {
+          $gt: 0
+        }
+      }
+    },
+    {
+      $count: "Cantidad_libros"
+    }
+  ]
+)
+
+
+db.getCollection('books').aggregate(
+  [
+    {
+      $match: {
+        publishedDate: {
+          $exists: true
+        }
+      }
+    },
+    {
+      $count: "Cantidad_libros"
+    }
+  ]
+)
+
+db.getCollection('books').aggregate(
+  [
+    {
+      $match: {
+        publishedDate: {
+          $exists: false
+        }
+      }
+    },
+    {
+      $count: "Cantidad_libros"
+    }
+  ]
+)
+
+
+
+
+
+db.getCollection('companies').dataSize()
+
+
+var schematodo = db.companies.findOne({})
+for (var key in schematodo){print(key,typeof key);}
+
+db.getCollection('companies').count()
+
+db.getCollection('companies').aggregate(
+    [
+    {
+      $match: 
+    {   
+        $or: [{founded_year: 1996},{founded_year: 1997},{founded_year: 2001},{founded_year: 2005}]}
+    },
+    {
+      $count: "cantidad de compañias"
+    }
+  ]
+        
+)
+
+db.getCollection('companies').find(
+ 
+    {   
+        $or: [{category_code: 'web' },{category_code: 'mobile'}]
+        
+    },{
+        name:1,number_of_employees:1, founded_year:1
+        
+    }
+).toArray()
+
+
+db.getCollection('companies').find(
+ 
+    {   
+        category_code: 'games_video' 
+        
+    }
+).sort({founded_year:-1})
+
+
+
+db.getCollection('companies').aggregate(
+  [
+    {
+      $match: {
+        number_of_employees: {
+          $gt: 600
+        }
+      }
+    },
+    {
+      $count: "Cantidad de empresas"
+    }
+  ]
+)
+
+db.getCollection('companies').find(
+    
+    {   founded_year:{$gte: 2001, $lte:2005},
+        
+        $or: [{category_code: 'web' },{category_code: 'music'}]
+        ,number_of_employees:{$gte: 500}
+          
+        
+    },{
+        name:1,homepage_url:1, twitter_username:1, number_of_employees:1 
+        
+    }
+)
+
+db.getCollection('companies').find(
+    
+    {   
+        offices:{$size : 2, $elemMatch: {city:"San Francisco" }}}
+        
+    }
+)
+
+db.getCollection('companies').find(
+    
+    {   
+        $or: [{category_code: 'games_video' }]
+        ,acquisition:{$elemMatch: {price_amount:{$gt:50000000}, acquired_year: 2007 }}
+        ,offices:{$elemMatch: {city:"Culver City" }}
+          
+        
+    },{
+        email_address:1
+        
+    }
+).toArray()
+
+
+
+
